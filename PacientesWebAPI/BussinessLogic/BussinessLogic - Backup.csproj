@@ -4,7 +4,11 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	  <RootNamespace>UPB.BussinessLogic</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Manager\" />
+    <Folder Include="Model\" />
+  </ItemGroup>
 
 </Project>

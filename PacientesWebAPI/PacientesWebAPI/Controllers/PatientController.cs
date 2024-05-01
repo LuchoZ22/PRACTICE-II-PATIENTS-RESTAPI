@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using UPB.BussinessLogic.Models;
+using UPB.BussinessLogic.Managers;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,18 +10,26 @@ namespace PacientesWebAPI.Controllers
     [ApiController]
     public class PatientController : ControllerBase
     {
+
+        private readonly PatientManager _patientManager;
+        public PatientController(PatientManager _patientManager) 
+        { 
+            this._patientManager = _patientManager;
+        }
+
+
         // GET: api/<PatientController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<PatientModel> Get()
         {
-            return new string[] { "value1", "value2" };
+            return _patientManager.GetAll();
         }
 
         // GET api/<PatientController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public PatientModel Get(string ci)
         {
-            return "value";
+            return _patientManager.GetByCI(ci);
         }
 
         // POST api/<PatientController>
