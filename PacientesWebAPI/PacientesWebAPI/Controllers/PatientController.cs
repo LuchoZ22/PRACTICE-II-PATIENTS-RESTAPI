@@ -26,7 +26,7 @@ namespace PacientesWebAPI.Controllers
         }
 
         // GET api/<PatientController>/5
-        [HttpGet("{id}")]
+        [HttpGet("{ci}")]
         public PatientModel Get(string ci)
         {
             return _patientManager.GetByCI(ci);
@@ -34,20 +34,23 @@ namespace PacientesWebAPI.Controllers
 
         // POST api/<PatientController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] PatientModel value)
         {
+            _patientManager.CreatePatient(value);
         }
 
         // PUT api/<PatientController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut("{ci}")]
+        public void Put(string ci, [FromBody] PatientModel value)
         {
+            _patientManager.UpdatePatient(ci, value);
         }
 
         // DELETE api/<PatientController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{ci}")]
+        public void Delete(string ci)
         {
+            _patientManager.DeletePatient(ci);
         }
     }
 }

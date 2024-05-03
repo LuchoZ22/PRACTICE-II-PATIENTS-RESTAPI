@@ -8,11 +8,11 @@ namespace UPB.BussinessLogic.Models
 {
     public class PatientModel
     {
-       
-        public string? Name { get; private set; }
-        public string? LastName { get; private set; }   
-        public string? CI { get; private set; }
-        public string? BloodType {  get; private set; }
+        public string CI { get;  set; }
+        public string Name { get;  set; }
+        public string LastName { get;  set; }   
+        public string BloodType {  get;  set; }
 
+        
     }
 }
