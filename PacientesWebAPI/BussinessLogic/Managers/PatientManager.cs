@@ -1,16 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UPB.BussinessLogic.Models;
 using CsvHelper;
 using System.Globalization;
-using System.Collections.Immutable;
 using CsvHelper.Configuration;
-using System.Reflection.PortableExecutable;
-using System.Security.AccessControl;
 using UPB.BussinessLogic.Managers.Exceptions;
 using Serilog;
 
@@ -31,11 +23,20 @@ namespace UPB.BussinessLogic.Managers
 
         public List<PatientModel> GetAll()
         {
-            using(var reader = new StreamReader(fileLocation))
-            using( var csv_reader = new CsvReader(reader, CultureInfo.InvariantCulture))
+            try
             {
-                return csv_reader.GetRecords<PatientModel>().ToList();
+                using (var reader = new StreamReader(fileLocation))
+                using (var csv_reader = new CsvReader(reader, CultureInfo.InvariantCulture))
+                {
+                    return csv_reader.GetRecords<PatientModel>().ToList();
+                }
             }
+            catch (Exception ex) 
+            {
+                throw new CSVFileNotFoundException(ex.Message);
+            }
+
+            
            
                 
         }
@@ -58,14 +59,22 @@ namespace UPB.BussinessLogic.Managers
 
         public void CreatePatient(PatientModel patient)
         {
-            var config = new CsvConfiguration(CultureInfo.InvariantCulture) { HasHeaderRecord = false};
-
-            using (var stream = File.Open(fileLocation, FileMode.Append))
-            using (var writer = new StreamWriter(stream))
-            using (var csv = new CsvWriter(writer, config))
+            try 
             {
-                csv.WriteRecord(patient);
+                var config = new CsvConfiguration(CultureInfo.InvariantCulture) { HasHeaderRecord = false };
+
+                using (var stream = File.Open(fileLocation, FileMode.Append))
+                using (var writer = new StreamWriter(stream))
+                using (var csv = new CsvWriter(writer, config))
+                {
+                    csv.WriteRecord(patient);
+                }
             }
+            catch(Exception ex) 
+            {
+                throw new CSVFileNotFoundException(ex.Message);
+            }
+            
         }
 
         public void DeletePatient(string ci) 
@@ -86,7 +95,7 @@ namespace UPB.BussinessLogic.Managers
             }
         }
 
-        public void UpdatePatient(string ci, PatientModel updatedPatient)
+        public void UpdatePatient(string ci, PatientUpdateModel patient)
         {
 
             var patients = GetAll();
@@ -94,8 +103,8 @@ namespace UPB.BussinessLogic.Managers
             if (personToUpdate != null)
             {
 
-                personToUpdate.Name = updatedPatient.Name;
-                personToUpdate.LastName = updatedPatient.LastName;
+                personToUpdate.Name = patient.Name;
+                personToUpdate.LastName = patient.LastName;
                 WriteCSV(patients);
             }
             else
@@ -104,17 +113,23 @@ namespace UPB.BussinessLogic.Managers
                 throw new NonFoundPatientException();
             }
                
-            
-            
         }
 
         private void WriteCSV(IEnumerable<PatientModel> patients)
         {
-            using (var writer = new StreamWriter(fileLocation))
-            using (var csv = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture)))
+            try
             {
-                csv.WriteRecords(patients);
+                using (var writer = new StreamWriter(fileLocation))
+                using (var csv = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture)))
+                {
+                    csv.WriteRecords(patients);
+                }
             }
+            catch (Exception ex) 
+            {
+                throw new CSVFileNotFoundException(ex.Message);
+            }
+            
 
         }
     }

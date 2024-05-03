@@ -41,9 +41,9 @@ namespace PacientesWebAPI.Controllers
 
         // PUT api/<PatientController>/5
         [HttpPut("{ci}")]
-        public void Put(string ci, [FromBody] PatientModel value)
+        public void Put(string ci, [FromBody]PatientUpdateModel patient)
         {
-            _patientManager.UpdatePatient(ci, value);
+            _patientManager.UpdatePatient(ci, patient);
         }
 
         // DELETE api/<PatientController>/5

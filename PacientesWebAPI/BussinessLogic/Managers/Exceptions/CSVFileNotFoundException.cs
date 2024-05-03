@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace UPB.BussinessLogic.Managers.Exceptions
 {
-    internal class NonFoundPatientException : Exception
+    internal class CSVFileNotFoundException : Exception
     {
-        public NonFoundPatientException() { }
-        public NonFoundPatientException(string message) : base(message) { }
+        public CSVFileNotFoundException() { }
+
+        public CSVFileNotFoundException(string message) : base(message) { }
     }
 }

@@ -23,16 +23,21 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
-    Console.WriteLine("IN DEVELOPMENT");
+    Log.Logger = new LoggerConfiguration()
+        .WriteTo.Console()
+        .WriteTo.File(builder.Configuration.GetSection("Logging").GetSection("FileLocation").Value + "logs-.log", rollingInterval: RollingInterval.Day)
+        .CreateLogger();
+    
 }
 
 if (app.Environment.Equals("QA"))
 {
+    app.UseSwagger();
+    app.UseSwaggerUI();
     Log.Logger = new LoggerConfiguration()
         .WriteTo.File(builder.Configuration.GetSection("Logging").GetSection("FileLocation").Value + "logs-.log", rollingInterval: RollingInterval.Day)
         .CreateLogger();
-    Console.WriteLine("EN QA");
+   
 }
 
 
