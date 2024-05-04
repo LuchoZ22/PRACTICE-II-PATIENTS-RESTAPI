@@ -31,9 +31,13 @@ namespace UPB.BussinessLogic.Managers
                     return csv_reader.GetRecords<PatientModel>().ToList();
                 }
             }
-            catch (Exception ex) 
+            catch (IOException ex) 
             {
-                throw new CSVFileNotFoundException(ex.Message);
+                CSVFileNotFoundException csv_exception = new CSVFileNotFoundException(ex.Message);
+                Log.Error(csv_exception.LogMessage("GETALL"));
+                Log.Error("StackTrace: " + ex.StackTrace);
+
+                throw csv_exception;
             }
 
             
@@ -44,16 +48,17 @@ namespace UPB.BussinessLogic.Managers
         public PatientModel GetByCI(string ci) 
         {
 
-            PatientModel? patient =  GetAll().FirstOrDefault( x => x.CI == ci);
-
-            if (patient != null)
-                return patient;
+            PatientModel p  = GetAll().FirstOrDefault( x => x.CI == ci);
+            if (p != null)
+                return p;
             else
             {
-                Log.Error($"Patient with the CI: {ci} was not found");
-                throw new NonFoundPatientException();
-                
+                NonFoundPatientException nonFoundEx = new NonFoundPatientException();
+                Log.Error($"The Patient with the CI: {ci} was not found");
+                throw nonFoundEx;
+
             }
+
                
         }
 
@@ -70,9 +75,13 @@ namespace UPB.BussinessLogic.Managers
                     csv.WriteRecord(patient);
                 }
             }
-            catch(Exception ex) 
+            catch(IOException ex) 
             {
-                throw new CSVFileNotFoundException(ex.Message);
+                CSVFileNotFoundException csv_exception = new CSVFileNotFoundException(ex.Message);
+                Log.Error(csv_exception.LogMessage("CREATEPATIENT"));
+                Log.Error("StackTrace: " + ex.StackTrace);
+
+                throw csv_exception;
             }
             
         }
@@ -90,8 +99,9 @@ namespace UPB.BussinessLogic.Managers
 
             else
             {
-                Log.Error($"Patient with the CI: {ci} was not found");
-                throw new NonFoundPatientException();
+                NonFoundPatientException nonFoundEx = new NonFoundPatientException();
+                Log.Error($"The Patient with the CI: {ci} was not found");
+                throw nonFoundEx;
             }
         }
 
@@ -125,9 +135,13 @@ namespace UPB.BussinessLogic.Managers
                     csv.WriteRecords(patients);
                 }
             }
-            catch (Exception ex) 
+            catch (IOException ex) 
             {
-                throw new CSVFileNotFoundException(ex.Message);
+                CSVFileNotFoundException csv_exception = new CSVFileNotFoundException(ex.Message);
+                Log.Error(csv_exception.LogMessage("WRITECSV"));
+                Log.Error("StackTrace: " + ex.StackTrace);
+
+                throw csv_exception;
             }
             
 

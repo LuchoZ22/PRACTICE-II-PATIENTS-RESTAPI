@@ -1,3 +1,4 @@
+using PacientesWebAPI.Middleware;
 using Serilog;
 using UPB.BussinessLogic.Managers;
 
@@ -43,7 +44,7 @@ if (app.Environment.Equals("QA"))
 
 Log.Information("Initializing the server");
 
-
+app.UseExceptionHandlerMiddleware();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

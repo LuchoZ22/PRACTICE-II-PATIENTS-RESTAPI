@@ -6,9 +6,14 @@ using System.Threading.Tasks;
 
 namespace UPB.BussinessLogic.Managers.Exceptions
 {
-    internal class NonFoundPatientException : Exception
+    public class NonFoundPatientException : Exception
     {
         public NonFoundPatientException() { }
         public NonFoundPatientException(string message) : base(message) { }
+
+        public string LogMessage(string method)
+        {
+            return "Method: " + method + " Message: " + base.Message;
+        }
     }
 }
