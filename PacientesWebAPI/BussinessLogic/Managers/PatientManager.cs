@@ -31,7 +31,7 @@ namespace UPB.BussinessLogic.Managers
                     return csv_reader.GetRecords<PatientModel>().ToList();
                 }
             }
-            catch (IOException ex) 
+            catch (Exception ex) 
             {
                 CSVFileNotFoundException csv_exception = new CSVFileNotFoundException(ex.Message);
                 Log.Error(csv_exception.LogMessage("GETALL"));
