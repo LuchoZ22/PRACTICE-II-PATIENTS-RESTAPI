@@ -30,7 +30,6 @@ if (app.Environment.IsDevelopment() || app.Environment.EnvironmentName.Equals("Q
     app.UseSwagger();
     app.UseSwaggerUI(c => c.DocumentTitle = app.Environment.EnvironmentName);
     Log.Logger = new LoggerConfiguration()
-        .WriteTo.Console()
         .WriteTo.File(builder.Configuration.GetSection("Logging").GetSection("FileLocation").Value + "logs-.log", rollingInterval: RollingInterval.Day)
         .CreateLogger();
     
@@ -42,6 +41,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => c.DocumentTitle = app.Environment.EnvironmentName);
 
     Log.Logger = new LoggerConfiguration()
+        .WriteTo.Console()
         .WriteTo.File(builder.Configuration.GetSection("Logging").GetSection("FileLocation").Value + "logs-.log", rollingInterval: RollingInterval.Day)
         .CreateLogger();
     
@@ -51,6 +51,7 @@ if (app.Environment.IsDevelopment())
 Log.Information("Initializing the server");
 
 app.UseExceptionHandlerMiddleware();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

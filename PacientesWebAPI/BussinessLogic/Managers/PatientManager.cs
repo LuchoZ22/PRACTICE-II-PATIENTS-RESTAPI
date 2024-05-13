@@ -47,7 +47,8 @@ namespace UPB.BussinessLogic.Managers
 
         public PatientModel GetByCI(string ci) 
         {
-
+            string a = ci;
+            Log.Error(a);
             PatientModel p  = GetAll().FirstOrDefault( x => x.CI == ci);
             if (p != null)
                 return p;
