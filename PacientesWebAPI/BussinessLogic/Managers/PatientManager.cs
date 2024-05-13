@@ -5,6 +5,9 @@ using System.Globalization;
 using CsvHelper.Configuration;
 using UPB.BussinessLogic.Managers.Exceptions;
 using Serilog;
+using System.Net.Http;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 
 namespace UPB.BussinessLogic.Managers
@@ -47,9 +50,8 @@ namespace UPB.BussinessLogic.Managers
 
         public PatientModel GetByCI(string ci) 
         {
-            string a = ci;
-            Log.Error(a);
-            PatientModel p  = GetAll().FirstOrDefault( x => x.CI == ci);
+
+            PatientModel? p  = GetAll().FirstOrDefault( x => x.CI == ci);
             if (p != null)
                 return p;
             else
@@ -147,5 +149,41 @@ namespace UPB.BussinessLogic.Managers
             
 
         }
+
+
+        public async void GetPatientsCodes()
+        {
+
+
+            var patients = GetAll();
+            HttpClient client = new HttpClient();
+            foreach (var patient in patients)
+            {
+                try
+                {
+                    
+                    HttpResponseMessage response = await client.GetAsync($"{_configuration.GetConnectionString("PatientsCodeAPI")}/{patient.CI}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        using var responseStream = await response.Content.ReadAsStreamAsync();
+                        string patientCode = await JsonSerializer.DeserializeAsync<string>(responseStream);
+                        patient.Code = patientCode;
+                    }
+                    else
+                    {
+                        NonFoundPatientException nonFoundEx = new NonFoundPatientException();
+                        Log.Error($"The Patient with the CI: {patient.CI} was not found");
+                        throw nonFoundEx;
+                    }
+                }
+                catch (Exception ex) 
+                {
+                    FailedToGetDataException fgde = new FailedToGetDataException(ex.Message);
+                    Log.Error("Failed to get code for the patient");
+                    throw fgde;
+                }
+            }
+        }
+
     }
 }
