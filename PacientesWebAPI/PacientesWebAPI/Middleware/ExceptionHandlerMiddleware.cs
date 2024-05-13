@@ -42,8 +42,14 @@ namespace PacientesWebAPI.Middleware
                         break;
                     case CSVFileNotFoundException e:
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                       
                         break;
+
+                    case FailedToGetDataException e:
+                        response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                        responseModel.Message = "The conection to the backing service was not possible";
+
+                        break;
+                        
                     default:
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;
                         break;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UPB.BussinessLogic.Managers.Exceptions
 {
-    internal class FailedToGetDataException : Exception
+    public class FailedToGetDataException : Exception
     {
 
         public FailedToGetDataException() { }
