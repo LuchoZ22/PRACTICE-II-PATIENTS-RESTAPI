@@ -5,6 +5,9 @@ using System.Globalization;
 using CsvHelper.Configuration;
 using UPB.BussinessLogic.Managers.Exceptions;
 using Serilog;
+using System.Net.Http;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 
 namespace UPB.BussinessLogic.Managers
@@ -146,5 +149,25 @@ namespace UPB.BussinessLogic.Managers
             
 
         }
+
+
+        public async Task<string> GetPatientCode()
+        {
+            try
+            {
+                throw new NotImplementedException();
+
+            }
+            catch (Exception ex)
+            {
+                FailedToGetDataException fe = new FailedToGetDataException(ex.Message);
+                Log.Error(fe.LogMessage("GetPatientsAsync"));
+                Log.Error("StackTrace: " + ex.StackTrace);
+                throw fe;
+            }
+        }
+
+        
+
     }
 }
