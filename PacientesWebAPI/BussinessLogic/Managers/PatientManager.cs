@@ -51,7 +51,7 @@ namespace UPB.BussinessLogic.Managers
         public PatientModel GetByCI(string ci) 
         {
 
-            PatientModel p  = GetAll().FirstOrDefault( x => x.CI == ci);
+            PatientModel? p  = GetAll().FirstOrDefault( x => x.CI == ci);
             if (p != null)
                 return p;
             else
@@ -151,23 +151,39 @@ namespace UPB.BussinessLogic.Managers
         }
 
 
-        public async Task<string> GetPatientCode()
+        public async void GetPatientsCodes()
         {
-            try
-            {
-                throw new NotImplementedException();
 
-            }
-            catch (Exception ex)
+
+            var patients = GetAll();
+            HttpClient client = new HttpClient();
+            foreach (var patient in patients)
             {
-                FailedToGetDataException fe = new FailedToGetDataException(ex.Message);
-                Log.Error(fe.LogMessage("GetPatientsAsync"));
-                Log.Error("StackTrace: " + ex.StackTrace);
-                throw fe;
+                try
+                {
+                    
+                    HttpResponseMessage response = await client.GetAsync($"{_configuration.GetConnectionString("PatientsCodeAPI")}/{patient.CI}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        using var responseStream = await response.Content.ReadAsStreamAsync();
+                        string patientCode = await JsonSerializer.DeserializeAsync<string>(responseStream);
+                        patient.Code = patientCode;
+                    }
+                    else
+                    {
+                        NonFoundPatientException nonFoundEx = new NonFoundPatientException();
+                        Log.Error($"The Patient with the CI: {patient.CI} was not found");
+                        throw nonFoundEx;
+                    }
+                }
+                catch (Exception ex) 
+                {
+                    FailedToGetDataException fgde = new FailedToGetDataException(ex.Message);
+                    Log.Error("Failed to get code for the patient");
+                    throw fgde;
+                }
             }
         }
-
-        
 
     }
 }
