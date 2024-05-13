@@ -43,9 +43,6 @@ namespace UPB.BussinessLogic.Managers
                 throw csv_exception;
             }
 
-            
-           
-                
         }
 
         public PatientModel GetByCI(string ci) 
@@ -165,8 +162,8 @@ namespace UPB.BussinessLogic.Managers
                     HttpResponseMessage response = await client.GetAsync($"{_configuration.GetConnectionString("PatientsCodeAPI")}/{patient.CI}");
                     if (response.IsSuccessStatusCode)
                     {
-                        using var responseStream = await response.Content.ReadAsStreamAsync();
-                        string patientCode = await JsonSerializer.DeserializeAsync<string>(responseStream);
+                        string patientCode = await response.Content.ReadAsStringAsync();
+                        Log.Information($"{patientCode}");
                         patient.Code = patientCode;
                     }
                     else
@@ -183,6 +180,7 @@ namespace UPB.BussinessLogic.Managers
                     throw fgde;
                 }
             }
+            WriteCSV(patients);
         }
 
     }
